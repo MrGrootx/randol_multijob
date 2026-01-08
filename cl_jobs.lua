@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 local Config = lib.require('config')
 
 local function showMultijob()
@@ -14,9 +15,19 @@ local function showMultijob()
                 description = 'Current Status: ' .. dutyStatus,
                 icon = dutyIcon,
                 iconColor = colorIcon,
+                -- onSelect = function()
+                --     TriggerServerEvent('QBCore:ToggleDuty')
+                --     Wait(500)
+                --     showMultijob()
+                -- end,
                 onSelect = function()
-                    TriggerServerEvent('QBCore:ToggleDuty')
-                    Wait(500)
+                    if PlayerData.job.onduty == true then
+                        exports["g-dutyV2"]:clockOffDuty()
+                    else
+                        exports["g-dutyV2"]:clockOnDuty()
+                    end
+            
+                    Wait(300)
                     showMultijob()
                 end,
             },
@@ -85,3 +96,4 @@ lib.addKeybind({
         showMultijob()
     end
 })
+

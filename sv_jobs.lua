@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 local Config = lib.require('config')
 
 local function GetJobCount(cid)
@@ -29,7 +30,7 @@ lib.callback.register('randol_multijob:server:myJobs', function(source)
             return error(('MISSING JOB FROM jobs.lua: "%s" | CITIZEN ID: %s'): format(v.job, Player.PlayerData.citizenid)) 
         end
         
-        local grade = job.grades[tostring(v.grade)]
+        local grade = job.grades[v.grade] or job.grades[tostring(v.grade)]
 
         if not grade then 
             return error(('MISSING JOB GRADE for "%s". GRADE MISSING: %s | CITIZEN ID: %s'): format(v.job, v.grade, Player.PlayerData.citizenid)) 
@@ -66,6 +67,10 @@ RegisterNetEvent('randol_multijob:server:changeJob', function(job)
     
     if not canSet then 
         return 
+    end
+
+    if exports["g-dutyV2"]:isOnDuty(src) then
+        exports["g-dutyV2"]:clockOffDuty(src)
     end
 
     Player.Functions.SetJob(job, grade)
@@ -163,3 +168,4 @@ AddEventHandler('onResourceStart', function(resource)
         );
     ]=])
 end)
+
