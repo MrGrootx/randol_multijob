@@ -139,11 +139,21 @@ end)
 RegisterNetEvent('randol_multijob:server:FireEmployeeByIdentifier', function(identifier, jobName)
     if not identifier or not jobName then return end
 
+    local exists = MySQL.scalar.await(
+        'SELECT 1 FROM save_jobs WHERE cid = ? AND job = ? LIMIT 1',
+        { identifier, jobName }
+    )
+
+    if not exists then
+        return
+    end
+
     MySQL.query.await(
         'DELETE FROM save_jobs WHERE cid = ? AND job = ?',
         { identifier, jobName }
     )
 end)
+
 
 
 local function adminRemoveJob(src, id, job)
